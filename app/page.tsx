@@ -34,6 +34,7 @@ export default async function Home() {
     query: queries.listTodos,
   });
 
+  // dummy comment to trigger commit and deploy
   const todos = data.listTodos.items;
 
   return (
