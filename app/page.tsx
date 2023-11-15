@@ -1,33 +1,7 @@
 // app/page.tsx
-import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/api";
-import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
-
-import * as mutations from "@/src/graphql/mutations";
+import { createTodo } from "@/src/graphql/mutations";
 import * as queries from "@/src/graphql/queries";
-
-import config from "@/src/amplifyconfiguration.json";
-
-export const cookiesClient = generateServerClientUsingCookies({
-  config,
-  cookies,
-});
-
-async function createTodo(formData: FormData) {
-  "use server";
-
-  await cookiesClient.graphql({
-    query: mutations.createTodo,
-    variables: {
-      input: {
-        name: formData.get("name")?.toString() ?? "",
-        description: formData.get("description")?.toString() ?? "",
-      },
-    },
-  });
-
-  revalidatePath("/");
-}
+import { cookiesClient } from "@/utils/createTodo";
 
 export default async function Home() {
   const { data, errors } = await cookiesClient.graphql({
