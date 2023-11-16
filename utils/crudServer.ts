@@ -2,15 +2,16 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 import config from "@/src/amplifyconfiguration.json";
-import * as mutations from "@/src/graphql/mutations";
 import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/api";
+
+import * as mutations from "@/src/graphql/mutations";
 
 export const cookiesClient = generateServerClientUsingCookies({
   config,
   cookies,
 });
 
-async function createTodo(formData: FormData) {
+export async function createTodo(formData: FormData) {
   "use server";
 
   await cookiesClient.graphql({
@@ -19,6 +20,20 @@ async function createTodo(formData: FormData) {
       input: {
         name: formData.get("name")?.toString() ?? "",
         description: formData.get("description")?.toString() ?? "",
+      },
+    },
+  });
+
+  revalidatePath("/");
+}
+
+export async function deleteTodo(id: string) {
+  "use server";
+  await cookiesClient.graphql({
+    query: mutations.deleteTodo,
+    variables: {
+      input: {
+        id: id,
       },
     },
   });

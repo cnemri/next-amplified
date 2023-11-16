@@ -1,7 +1,8 @@
 // app/page.tsx
-import { createTodo } from "@/src/graphql/mutations";
+import DeleteTodoButton from "@/components/DeleteTodoButton";
 import * as queries from "@/src/graphql/queries";
-import { cookiesClient } from "@/utils/createTodo";
+import { deleteTodo } from "@/utils/crudServer";
+import { cookiesClient, createTodo } from "@/utils/crudServer";
 
 export default async function Home() {
   const { data, errors } = await cookiesClient.graphql({
@@ -38,6 +39,7 @@ export default async function Home() {
             <li style={{ listStyle: "none" }}>
               <div>{todo.name}</div>
               <div>{todo.description}</div>
+              <DeleteTodoButton handleClick={deleteTodo} id={todo.id} />
             </li>
           );
         })}
